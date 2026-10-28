@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Container, Row } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Particle from "../Particle";
 import pdf from "../../Assets/../Assets/Resume.pdf";
-import { AiOutlineDownload } from "react-icons/ai";
+import { AiOutlineDownload, AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
@@ -11,7 +11,11 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 function ResumeNew() {
   const [width, setWidth] = useState(0);
   const [pageCount, setPageCount] = useState(0);
+  const [pageNumber, setPageNumber] = useState(1);
   const previewRef = useRef(null);
+  const onDocumentLoad = useCallback(({ numPages }) => {
+    setPageCount(numPages);
+  }, []);
 
   useEffect(() => {
     const preview = previewRef.current;
@@ -42,16 +46,34 @@ function ResumeNew() {
       </Container>
 
         <div className="resume resume-preview" ref={previewRef}>
-          <Document file={pdf} onLoadSuccess={({ numPages }) => setPageCount(numPages)}>
-            {width > 0 && Array.from({ length: pageCount }, (_, index) => (
+          <Document file={pdf} onLoadSuccess={onDocumentLoad}>
+            {width > 0 && pageCount > 0 && (
               <Page
-                key={index + 1}
-                pageNumber={index + 1}
+                pageNumber={pageNumber}
                 width={width}
                 renderTextLayer={false}
               />
-            ))}
+            )}
           </Document>
+          {pageCount > 1 && (
+            <nav className="resume-pagination" aria-label="Résumé pages">
+              <Button
+                aria-label="Previous résumé page"
+                disabled={pageNumber === 1}
+                onClick={() => setPageNumber((current) => current - 1)}
+              >
+                <AiOutlineLeft aria-hidden="true" />
+              </Button>
+              <span aria-live="polite">Page {pageNumber} of {pageCount}</span>
+              <Button
+                aria-label="Next résumé page"
+                disabled={pageNumber === pageCount}
+                onClick={() => setPageNumber((current) => current + 1)}
+              >
+                <AiOutlineRight aria-hidden="true" />
+              </Button>
+            </nav>
+          )}
         </div>
 
         <Row className="resume-download">

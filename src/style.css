@@ -783,8 +783,25 @@ button:focus {
   height: auto !important;
 }
 
-.resume-preview .react-pdf__Page + .react-pdf__Page {
+.resume-pagination {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
   margin-top: 24px;
+}
+
+.resume-pagination .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.resume-pagination span {
+  white-space: nowrap;
 }
 
 .resume-section .resume-download {
