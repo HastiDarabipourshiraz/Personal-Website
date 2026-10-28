@@ -783,6 +783,10 @@ button:focus {
   height: auto !important;
 }
 
+.resume-preview .react-pdf__Page + .react-pdf__Page {
+  margin-top: 24px;
+}
+
 .resume-section .resume-download {
   position: relative;
   justify-content: center;

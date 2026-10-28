@@ -10,6 +10,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 function ResumeNew() {
   const [width, setWidth] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
   const previewRef = useRef(null);
 
   useEffect(() => {
@@ -41,10 +42,15 @@ function ResumeNew() {
       </Container>
 
         <div className="resume resume-preview" ref={previewRef}>
-          <Document file={pdf}>
-            {width > 0 && (
-              <Page pageNumber={1} width={width} renderTextLayer={false} />
-            )}
+          <Document file={pdf} onLoadSuccess={({ numPages }) => setPageCount(numPages)}>
+            {width > 0 && Array.from({ length: pageCount }, (_, index) => (
+              <Page
+                key={index + 1}
+                pageNumber={index + 1}
+                width={width}
+                renderTextLayer={false}
+              />
+            ))}
           </Document>
         </div>
 
